@@ -11,6 +11,6 @@ namespace AplusServiceRRHH.Entities.DBAplusEmpresas
         [Key]
         public int Id { get; set; }
         public string NombreOficina { get; set; }
-        public string HHRRSucursalId { get; set; }
+        public int HHRRSucursalId { get; set; }
     }
 }

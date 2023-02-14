@@ -38,15 +38,16 @@ namespace AplusServiceRRHH.Repository
             }
             else
             {
-                this._logger.LogError($"OficinaRepositorio/ObtenerOficina: Message => 'Error al buscar Oficina' CONSULT => {sql}");
-                throw new Exception("No existe tipo documento");
+                this._logger.LogError($"OficinaRepositorio/ObtenerOficina: Message => 'Error al obtener oficina' CONSULT => {sql}");
+                throw new Exception("No se pudo obtener oficina");
             }
         }
-        public async Task<List<HHRROficina>> ObtenerOficinaId(int id)
+        public async Task<HHRROficina> ObtenerOficinaId(int id)
         {
-            this._logger.LogWarning($"OficinaRepository/ObtenerOficinaId(): Inizialize...");
+            this._logger.LogWarning($"OficinaRepository/ObtenerOficinaId({id}): Inizialize...");
             var sql = this._oficinaQuery.ObtenerOficinaId(id);
-            var resultado = await this._dbMysqlServerContext.HHRROficina.FromSqlRaw(sql).ToListAsync();
+            var data = await this._dbMysqlServerContext.HHRROficina.FromSqlRaw(sql).ToListAsync();
+            var resultado = data.FirstOrDefault();
             if (resultado != null)
             {
                 this._logger.LogWarning($"OficinaRepository/ObtenerOficinaId SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
@@ -54,19 +55,19 @@ namespace AplusServiceRRHH.Repository
             }
             else
             {
-                this._logger.LogError($"OficinaRepository/ObtenerOficinaId: Message => 'No existe Tipo Documento Registrado' CONSULT => {sql}");
-                throw new Exception("No existe tipo documento");
+                this._logger.LogError($"OficinaRepository/ObtenerOficinaId: Message => 'No se pudo obtener oficina' CONSULT => {sql}");
+                throw new Exception("No se pudo obtener oficina");
             }
         }
-        public async Task<List<HHRROficina>> CrearOficina(string NombreOficina, int sucursalId)
+        public async Task<bool> CrearOficina(string NombreOficina, int sucursalId)
         {
-            this._logger.LogWarning($"OficinaRepository/CrearOficinaId(): Inizialize...");
+            this._logger.LogWarning($"OficinaRepository/CrearOficinaId({NombreOficina},{sucursalId}): Inizialize...");
             var sql = this._oficinaQuery.GuardarOficina(NombreOficina, sucursalId);
-            var resultado = await this._dbMysqlServerContext.HHRROficina.FromSqlRaw(sql).ToListAsync();
-            if (resultado != null)
+            var resultado = await this._dbMysqlServerContext.Database.ExecuteSqlRawAsync(sql);
+            if (resultado == 1)
             {
                 this._logger.LogWarning($"OficinaRepository/CrearOficinaId SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
-                return resultado;
+                return true;
             }
             else
             {
@@ -74,36 +75,36 @@ namespace AplusServiceRRHH.Repository
                 throw new Exception("No existe tipo documento");
             }
         }
-        public async Task<List<HHRROficina>> ModificarOficina(string NombreOficina, int sucursalId, int id)
+        public async Task<bool> ModificarOficina(string NombreOficina, int sucursalId, int id)
         {
-            this._logger.LogWarning($"OficinaRepository/UpdateOficina(): Inizialize...");
+            this._logger.LogWarning($"OficinaRepository/UpdateOficina({NombreOficina},{sucursalId},{id}): Inizialize...");
             var sql = this._oficinaQuery.ModificarOficina(NombreOficina, sucursalId, id);
-            var resultado = await this._dbMysqlServerContext.HHRROficina.FromSqlRaw(sql).ToListAsync();
-            if (resultado != null)
+            var resultado = await this._dbMysqlServerContext.Database.ExecuteSqlRawAsync(sql);
+            if (resultado == 1)
             {
                 this._logger.LogWarning($"OficinaRepository/ModificarOficina SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
-                return resultado;
+                return true;
             }
             else
             {
                 this._logger.LogError($"OficinaRepository/ModificarOficina: Message => 'No puso modificar' CONSULT => {sql}");
-                throw new Exception("No existe tipo documento");
+                throw new Exception("No se pudo modificar oficina");
             }
         }
-        public async Task<List<HHRROficina>> EliminarOficina(int id)
+        public async Task<bool> EliminarOficina(int id)
         {
-            this._logger.LogWarning($"OficinaRepository/EliminarOficina(): Inizialize...");
+            this._logger.LogWarning($"OficinaRepository/EliminarOficina({id}): Inizialize...");
             var sql = this._oficinaQuery.EliminarOficina(id);
-            var resultado = await this._dbMysqlServerContext.HHRROficina.FromSqlRaw(sql).ToListAsync();
-            if (resultado != null)
+            var resultado = await this._dbMysqlServerContext.Database.ExecuteSqlRawAsync(sql);
+            if (resultado == 1)
             {
                 this._logger.LogWarning($"OficinaRepository/EliminarOficina SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
-                return resultado;
+                return true;
             }
             else
             {
-                this._logger.LogError($"OficinaRepository/EliminarOficina: Message => 'No existe Usuario Registrado' CONSULT => {sql}");
-                throw new Exception("No existe tipo documento");
+                this._logger.LogError($"OficinaRepository/EliminarOficina: Message => 'No se puede eliminar' CONSULT => {sql}");
+                throw new Exception("No se puede eliminar");
             }
         }
     }

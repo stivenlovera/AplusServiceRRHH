@@ -171,12 +171,13 @@ DROP TABLE IF EXISTS HHRRModContrato;
 CREATE TABLE
     HHRRModContrato(
         id int AUTO_INCREMENT primary key,
-        NombreModContrato VARCHAR(350) NOT NULL
+        NombreModContrato VARCHAR(350) NOT NULL,
+        dias INT not NULL
     );
 
 INSERT INTO
-    `HHRRModContrato`(`id`, `NombreModContrato`)
-VALUES ('1', 'Idefinido'), ('2', '6 meses'), ('3', '1 año');
+    `HHRRModContrato`(`id`, `NombreModContrato`,dias)
+VALUES ('1', 'I,definido','0'), ('2', '6 meses','60'), ('3', '1 año','365');
 
 DROP TABLE IF EXISTS HHRRTipoContrato;
 

@@ -52,6 +52,7 @@ namespace AplusServiceRRHH.Dtos.ColaboradorDto
         public string DirrecionLaboral { get; set; }
         public string EmailLaboral { get; set; }
         public string MotivoContrato { get; set; }
+        public int ModalidadContrato { get; set; }
         public DateTime FechaFinalizacion { get; set; }
         public DateTime FechaRatificacion { get; set; }
         public string ExcliblePlanilla { get; set; }

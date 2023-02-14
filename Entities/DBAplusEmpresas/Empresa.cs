@@ -17,8 +17,5 @@ namespace AplusServiceRRHH.Entities.DBAplusEmpresas
         public string Dirrecion { get; set; }
         public string Representante { get; set; }
         public DateTime fechaIngreso { get; set; }
-        public List<ImagenEmpresa> ImagenEmpresa { get; set; }
-        public List<Contacto> Contactos { get; set; }
-        public List<Usuario> Usuarios { get; set; }
     }
 }

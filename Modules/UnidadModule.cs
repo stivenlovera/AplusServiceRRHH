@@ -24,19 +24,19 @@ namespace AplusServiceRRHH.Modules
         {
             return await this._unidadRepository.ObtenerUnidad();
         }
-        public async Task<List<HHRRUnidad>> ObtenerUnidadId(int id)
+        public async Task<HHRRUnidad> ObtenerUnidadId(int id)
         {
             return await this._unidadRepository.ObtenerUnidadId(id);
         }
-        public async Task<List<HHRRUnidad>> CrearUnidad(string NombreUnidad)
+        public async Task<bool> CrearUnidad(string NombreUnidad)
         {
             return await this._unidadRepository.CrearUnidadId(NombreUnidad);
         }
-        public async Task<List<HHRRUnidad>> ModificarUnidadId(string NombreUnidad, int id)
+        public async Task<bool> ModificarUnidadId(string NombreUnidad, int id)
         {
             return await this._unidadRepository.ModificarUnidad(NombreUnidad, id);
         }
-        public async Task<List<HHRRUnidad>> EliminarUnidadId(int id)
+        public async Task<bool> EliminarUnidadId(int id)
         {
             return await this._unidadRepository.EliminarUnidad(id);
         }

@@ -10,35 +10,38 @@ namespace AplusServiceRRHH.Querys
         public string ObtenerModContrato()
         {
             return @$"
-               SELECT id,`NombreModContrato` FROM hhrrmodcontrato;
+               SELECT id,`NombreModContrato`,dias FROM hhrrmodcontrato;
             ";
         }
         public string ObtenerModContratoId(int id)
         {
             return @$"
-              SELECT id,`NombreModContrato` FROM hhrrmodcontrato WHERE id='{id}';
+              SELECT id,`NombreModContrato`,dias FROM hhrrmodcontrato WHERE id='{id}';
             ";
         }
-        public string GuardarModContrato(string NombreModContrato)
+        public string GuardarModContrato(string NombreModContrato, int dias)
         {
             return @$"
                 insert into 
                 hhrrmodcontrato ( 
-                    `NombreModContrato`
+                    `NombreModContrato`,
+                    dias
                 )
                 values
                 (
-                    '{NombreModContrato}'
+                    '{NombreModContrato}',
+                    '{dias}'
                 );
             ";
         }
-        public string ModificarModContrato(string NombreModContrato, int id)
+        public string ModificarModContrato(string NombreModContrato, int dias, int id)
         {
             return @$"
                 update 
                     hhrrmodcontrato 
                 set 
-                    NombreModContrato = '{NombreModContrato}'
+                    NombreModContrato = '{NombreModContrato}',
+                    dias = '{dias}'
                 where 
                     id = '{id}';
             ";

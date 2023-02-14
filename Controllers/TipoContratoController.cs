@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AplusServiceRRHH.Dtos;
+using AplusServiceRRHH.Dtos.TipoContratoDto;
+using AplusServiceRRHH.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -13,27 +15,28 @@ namespace AplusServiceRRHH.Controllers
     public class TipoContratoController : ControllerBase
     {
         private readonly ILogger<TipoContratoController> _logger;
+        private readonly TipoContratoRepository _tipoContratoRepository;
 
         public TipoContratoController(
-            ILogger<TipoContratoController> logger
+            ILogger<TipoContratoController> logger,
+            TipoContratoRepository tipoContratoRepository
         )
         {
             this._logger = logger;
+            this._tipoContratoRepository = tipoContratoRepository;
         }
         [HttpGet]
-        public Response ObtenerTipoContrato()
+        public async Task<Response> ObtenerTipoContrato()
         {
             this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerTipoContrato() Inizialize ...");
             try
             {
+                var tiposcontratos = await this._tipoContratoRepository.ObtenerTipoContratos();
                 return new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
-                    data = new
-                    {
-
-                    }
+                    Message = "Lista tipo contrato",
+                    data = tiposcontratos
                 };
             }
             catch (System.Exception e)
@@ -48,20 +51,18 @@ namespace AplusServiceRRHH.Controllers
                 return result;
             }
         }
-        [HttpPost]
-        public Response GuardarTipoContrato()
+        [HttpPost("store")]
+        public async Task<Response> GuardarTipoContrato(TipoContratoDto tipoContratoDto)
         {
-            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerTipoContrato() Inizialize ...");
+            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerTipoContrato({JsonConvert.SerializeObject(tipoContratoDto, Formatting.Indented)}) Inizialize ...");
             try
             {
+                var insert = await this._tipoContratoRepository.CrearTipoContrato(tipoContratoDto.nombreModalidad);
                 return new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
-                    data = new
-                    {
-
-                    }
+                    Message = "Registrado correctamente",
+                    data = null
                 };
             }
             catch (System.Exception e)
@@ -76,20 +77,18 @@ namespace AplusServiceRRHH.Controllers
                 return result;
             }
         }
-        [HttpGet("{id:int}")]
-        public Response ObtenerOneTipoContrato()
+        [HttpGet("edit/{id:int}")]
+        public async Task<Response> ObtenerOneTipoContrato(int id)
         {
-            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerTipoContrato() Inizialize ...");
+            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerTipoContrato({id}) Inizialize ...");
+            var obtener = await this._tipoContratoRepository.ObtenerTipoContratoId(id);
             try
             {
                 return new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
-                    data = new
-                    {
-
-                    }
+                    Message = "Mostrar un tipo contrato",
+                    data = obtener
                 };
             }
             catch (System.Exception e)
@@ -104,20 +103,18 @@ namespace AplusServiceRRHH.Controllers
                 return result;
             }
         }
-        [HttpPut("{id:int}")]
-        public Response UpdateTipoContrato()
+        [HttpPut("update/{id:int}")]
+        public async Task<Response> UpdateTipoContrato(int id, TipoContratoDto tipoContratoDto)
         {
-            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerTipoContrato() Inizialize ...");
+            this._logger.LogWarning($"{Request.Method}{Request.Path} UpdateTipoContrato({id},{JsonConvert.SerializeObject(tipoContratoDto, Formatting.Indented)}) Inizialize ...");
             try
             {
+                var update = await this._tipoContratoRepository.ModificarTipoContrato(tipoContratoDto.nombreModalidad, id);
                 return new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
-                    data = new
-                    {
-
-                    }
+                    Message = "Modificado correctamente",
+                    data = null
                 };
             }
             catch (System.Exception e)
@@ -132,20 +129,18 @@ namespace AplusServiceRRHH.Controllers
                 return result;
             }
         }
-        [HttpDelete("{id:int}")]
-        public Response DeleteTipoContrato()
+        [HttpDelete("delete/{id:int}")]
+        public async Task<Response> DeleteTipoContrato(int id)
         {
-            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerTipoContrato() Inizialize ...");
+            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerTipoContrato({id}) Inizialize ...");
             try
             {
+                var eliminar = await this._tipoContratoRepository.EliminarTipoContrato(id);
                 return new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
-                    data = new
-                    {
-
-                    }
+                    Message = "Eliminado correctamente",
+                    data = null
                 };
             }
             catch (System.Exception e)

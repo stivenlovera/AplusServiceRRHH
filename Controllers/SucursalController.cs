@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AplusServiceRRHH.Dtos;
+using AplusServiceRRHH.Dtos.SucursalDto;
+using AplusServiceRRHH.Modules;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -13,28 +15,31 @@ namespace AplusServiceRRHH.Controllers
     public class SucursalController : ControllerBase
     {
         private readonly ILogger<SucursalController> _logger;
+        private readonly SucursalModule _sucursalModule;
 
         public SucursalController(
-            ILogger<SucursalController> logger
+            ILogger<SucursalController> logger,
+            SucursalModule sucursalModule
         )
         {
             this._logger = logger;
+            this._sucursalModule = sucursalModule;
         }
-        [HttpGet]
-        public Response ObtenerSucursal()
+        [HttpGet("data-table")]
+        public async Task<Response> ObtenerSucursal()
         {
             this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerSucursal() Inizialize ...");
             try
             {
-                return new Response
+                var obtener = await this._sucursalModule.ObtenerSucursal();
+                var resultado = new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
-                    data = new
-                    {
-
-                    }
+                    Message = "Mostrar lista de sucursales",
+                    data = obtener
                 };
+                this._logger.LogWarning($"ObtenerSucursal SUCCESS => {JsonConvert.SerializeObject(obtener, Formatting.Indented)}");
+                return resultado;
             }
             catch (System.Exception e)
             {
@@ -48,21 +53,21 @@ namespace AplusServiceRRHH.Controllers
                 return result;
             }
         }
-        [HttpPost]
-        public Response GuardarSucursal()
+        [HttpPost("store")]
+        public async Task<Response> GuardarSucursal(SucursalDto sucursalDto)
         {
-            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerSucursal() Inizialize ...");
+            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerSucursal({JsonConvert.SerializeObject(sucursalDto, Formatting.Indented)}) Inizialize ...");
             try
             {
-                return new Response
+                var obtener = await this._sucursalModule.CrearSucursal(sucursalDto.nombreSucursal, sucursalDto.direccion);
+                var resultado = new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
-                    data = new
-                    {
-
-                    }
+                    Message = "Sucursal registrado correctamente",
+                    data = obtener
                 };
+                this._logger.LogWarning($"GuardarSucursal SUCCESS => {JsonConvert.SerializeObject(obtener, Formatting.Indented)}");
+                return resultado;
             }
             catch (System.Exception e)
             {
@@ -76,21 +81,21 @@ namespace AplusServiceRRHH.Controllers
                 return result;
             }
         }
-        [HttpGet("{id:int}")]
-        public Response ObtenerOneSucursal()
+        [HttpGet("edit/{id:int}")]
+        public async Task<Response> ObtenerOneSucursal(int id)
         {
-            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerSucursal() Inizialize ...");
+            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerOneSucursal({id}) Inizialize ...");
             try
             {
-                return new Response
+                var obtener = await this._sucursalModule.ObtenerSucursalId(id);
+                var resultado = new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
-                    data = new
-                    {
-
-                    }
+                    Message = "Mostrando una sucursal",
+                    data = obtener
                 };
+                this._logger.LogWarning($"ObtenerOneSucursal SUCCESS => {JsonConvert.SerializeObject(obtener, Formatting.Indented)}");
+                return resultado;
             }
             catch (System.Exception e)
             {
@@ -100,25 +105,25 @@ namespace AplusServiceRRHH.Controllers
                     Message = e.Message,
                     data = null
                 };
-                this._logger.LogError($"ObtenerSucursal() ERROR=> {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+                this._logger.LogError($"ObtenerOneSucursal() ERROR=> {JsonConvert.SerializeObject(result, Formatting.Indented)}");
                 return result;
             }
         }
-        [HttpPut("{id:int}")]
-        public Response UpdateSucursal()
+        [HttpPut("update/{id:int}")]
+        public async Task<Response> UpdateSucursal(int id, SucursalDto sucursalDto)
         {
-            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerSucursal() Inizialize ...");
+            this._logger.LogWarning($"{Request.Method}{Request.Path} UpdateSucursal({id},{JsonConvert.SerializeObject(sucursalDto, Formatting.Indented)}) Inizialize ...");
             try
             {
-                return new Response
+                var obtener = await this._sucursalModule.ModificarSucursalId(sucursalDto.nombreSucursal, sucursalDto.direccion, id);
+                var resultado = new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
-                    data = new
-                    {
-
-                    }
+                    Message = "Modificado correctamente",
+                    data = obtener
                 };
+                this._logger.LogWarning($"UpdateSucursal SUCCESS => {JsonConvert.SerializeObject(obtener, Formatting.Indented)}");
+                return resultado;
             }
             catch (System.Exception e)
             {
@@ -128,25 +133,25 @@ namespace AplusServiceRRHH.Controllers
                     Message = e.Message,
                     data = null
                 };
-                this._logger.LogError($"ObtenerSucursal() ERROR=> {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+                this._logger.LogError($"UpdateSucursal() ERROR=> {JsonConvert.SerializeObject(result, Formatting.Indented)}");
                 return result;
             }
         }
-        [HttpDelete("{id:int}")]
-        public Response DeleteSucursal()
+        [HttpDelete("delete/{id:int}")]
+        public async Task<Response> DeleteSucursal(int id)
         {
-            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerSucursal() Inizialize ...");
+            this._logger.LogWarning($"{Request.Method}{Request.Path} DeleteSucursal({id}) Inizialize ...");
             try
             {
-                return new Response
+                var obtener = await this._sucursalModule.EliminarSucursalId(id);
+                var resultado = new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
-                    data = new
-                    {
-
-                    }
+                    Message = "Eliminado correctamente",
+                    data = obtener
                 };
+                this._logger.LogWarning($"UpdateSucursal SUCCESS => {JsonConvert.SerializeObject(obtener, Formatting.Indented)}");
+                return resultado;
             }
             catch (System.Exception e)
             {
@@ -156,7 +161,7 @@ namespace AplusServiceRRHH.Controllers
                     Message = e.Message,
                     data = null
                 };
-                this._logger.LogError($"ObtenerSucursal() ERROR=> {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+                this._logger.LogError($"DeleteSucursal() ERROR=> {JsonConvert.SerializeObject(result, Formatting.Indented)}");
                 return result;
             }
         }

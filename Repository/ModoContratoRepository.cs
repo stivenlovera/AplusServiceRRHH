@@ -38,15 +38,16 @@ namespace AplusServiceRRHH.Repository
             }
             else
             {
-                this._logger.LogError($"ModoContratoRepositorio/ObtenerModoContratos: Message => 'Error al buscar ModoContratos' CONSULT => {sql}");
-                throw new Exception("No existe tipo documento");
+                this._logger.LogError($"ModoContratoRepositorio/ObtenerModoContratos: Message => 'No se pudo obtener modalidades de contratos' CONSULT => {sql}");
+                throw new Exception("No se pudo obtener modalidades de contratos");
             }
         }
-        public async Task<List<HHRRModContrato>> ObtenerModoContratoId(int id)
+        public async Task<HHRRModContrato> ObtenerModoContratoId(int id)
         {
-            this._logger.LogWarning($"ModoContratoRepository/ObtenerModoContratoId(): Inizialize...");
+            this._logger.LogWarning($"ModoContratoRepository/ObtenerModoContratoId({id}): Inizialize...");
             var sql = this._modContratoQuery.ObtenerModContratoId(id);
-            var resultado = await this._dbMysqlServerContext.HHRRModContrato.FromSqlRaw(sql).ToListAsync();
+            var data = await this._dbMysqlServerContext.HHRRModContrato.FromSqlRaw(sql).ToListAsync();
+            var resultado = data.FirstOrDefault();
             if (resultado != null)
             {
                 this._logger.LogWarning($"ModoContratoRepository/ObtenerModoContratoId SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
@@ -54,56 +55,56 @@ namespace AplusServiceRRHH.Repository
             }
             else
             {
-                this._logger.LogError($"ModoContratoRepository/ObtenerModoContratoId: Message => 'No existe Tipo Documento Registrado' CONSULT => {sql}");
-                throw new Exception("No existe tipo documento");
+                this._logger.LogError($"ModoContratoRepository/ObtenerModoContratoId: Message => 'No se pudo obtener modalidad de contrato' CONSULT => {sql}");
+                throw new Exception("No se pudo obtener modalidad de contrato");
             }
         }
-        public async Task<List<HHRRModContrato>> CrearModoContrato(string NombreModoContrato)
+        public async Task<bool> CrearModoContrato(string NombreModoContrato, int dias)
         {
-            this._logger.LogWarning($"ModoContratoRepository/CrearModoContratoId(): Inizialize...");
-            var sql = this._modContratoQuery.GuardarModContrato(NombreModoContrato);
-            var resultado = await this._dbMysqlServerContext.HHRRModContrato.FromSqlRaw(sql).ToListAsync();
-            if (resultado != null)
+            this._logger.LogWarning($"ModoContratoRepository/CrearModoContratoId({NombreModoContrato},{dias}): Inizialize...");
+            var sql = this._modContratoQuery.GuardarModContrato(NombreModoContrato, dias);
+            var resultado = await this._dbMysqlServerContext.Database.ExecuteSqlRawAsync(sql);
+            if (resultado == 1)
             {
                 this._logger.LogWarning($"ModoContratoRepository/CrearModoContratoId SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
-                return resultado;
+                return true;
             }
             else
             {
-                this._logger.LogError($"ModoContratoRepository/CrearModoContratoId: Message => 'No existe pudo crear Tipo Documento' CONSULT => {sql}");
-                throw new Exception("No existe tipo documento");
+                this._logger.LogError($"ModoContratoRepository/CrearModoContratoId: Message => 'No se puo obtener modalidad de contrato' CONSULT => {sql}");
+                throw new Exception("No modalidad de contrato");
             }
         }
-        public async Task<List<HHRRModContrato>> ModificarModoContrato(string NombreModoContrato, int id)
+        public async Task<bool> ModificarModoContrato(string NombreModoContrato, int dias, int id)
         {
-            this._logger.LogWarning($"ModoContratoRepository/UpdateModoContrato(): Inizialize...");
-            var sql = this._modContratoQuery.ModificarModContrato(NombreModoContrato, id);
-            var resultado = await this._dbMysqlServerContext.HHRRModContrato.FromSqlRaw(sql).ToListAsync();
-            if (resultado != null)
+            this._logger.LogWarning($"ModoContratoRepository/UpdateModoContrato({NombreModoContrato},{id}): Inizialize...");
+            var sql = this._modContratoQuery.ModificarModContrato(NombreModoContrato, dias, id);
+            var resultado = await this._dbMysqlServerContext.Database.ExecuteSqlRawAsync(sql);
+            if (resultado == 1)
             {
                 this._logger.LogWarning($"ModoContratoRepository/ModificarModoContrato SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
-                return resultado;
+                return true;
             }
             else
             {
                 this._logger.LogError($"ModoContratoRepository/ModificarModoContrato: Message => 'No puso modificar' CONSULT => {sql}");
-                throw new Exception("No existe tipo documento");
+                throw new Exception("No se puso modificar");
             }
         }
-        public async Task<List<HHRRModContrato>> EliminarModoContrato(int id)
+        public async Task<bool> EliminarModoContrato(int id)
         {
-            this._logger.LogWarning($"ModoContratoRepository/EliminarModoContrato(): Inizialize...");
+            this._logger.LogWarning($"ModoContratoRepository/EliminarModoContrato({id}): Inizialize...");
             var sql = this._modContratoQuery.EliminarModContrato(id);
-            var resultado = await this._dbMysqlServerContext.HHRRModContrato.FromSqlRaw(sql).ToListAsync();
-            if (resultado != null)
+            var resultado = await this._dbMysqlServerContext.Database.ExecuteSqlRawAsync(sql);
+            if (resultado == 1)
             {
                 this._logger.LogWarning($"ModoContratoRepository/EliminarModoContrato SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
-                return resultado;
+                return true;
             }
             else
             {
-                this._logger.LogError($"ModoContratoRepository/EliminarModoContrato: Message => 'No existe Usuario Registrado' CONSULT => {sql}");
-                throw new Exception("No existe tipo documento");
+                this._logger.LogError($"ModoContratoRepository/EliminarModoContrato: Message => 'No se pudo eliminar' CONSULT => {sql}");
+                throw new Exception("No se puso eliminar");
             }
         }
     }

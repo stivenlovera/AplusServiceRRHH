@@ -24,7 +24,7 @@ namespace AplusServiceRRHH.Repository
         {
             this._dbMysqlServerContext = DbMysqlServerContext;
             this._logger = logger;
-            this._sucursalQuery =sucursalQuery;
+            this._sucursalQuery = sucursalQuery;
         }
         public async Task<List<HHRRSucursal>> ObtenerSucursal()
         {
@@ -39,14 +39,15 @@ namespace AplusServiceRRHH.Repository
             else
             {
                 this._logger.LogError($"SucursalRepository/ObtenerSucursal: Message => 'Error al buscar Sucursal' CONSULT => {sql}");
-                throw new Exception("No existe tipo documento");
+                throw new Exception("No se pudo obtener sucursales");
             }
         }
-        public async Task<List<HHRRSucursal>> ObtenerSucursalId(int id)
+        public async Task<HHRRSucursal> ObtenerSucursalId(int id)
         {
-            this._logger.LogWarning($"SucursalRepository/ObtenerSucursalId(): Inizialize...");
+            this._logger.LogWarning($"SucursalRepository/ObtenerSucursalId({id}): Inizialize...");
             var sql = this._sucursalQuery.ObtenerSucursalId(id);
-            var resultado = await this._dbMysqlServerContext.HHRRSucursal.FromSqlRaw(sql).ToListAsync();
+            var data = await this._dbMysqlServerContext.HHRRSucursal.FromSqlRaw(sql).ToListAsync();
+            var resultado = data.FirstOrDefault();
             if (resultado != null)
             {
                 this._logger.LogWarning($"SucursalRepository/ObtenerSucursalId SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
@@ -55,55 +56,56 @@ namespace AplusServiceRRHH.Repository
             else
             {
                 this._logger.LogError($"SucursalRepository/ObtenerSucursalId: Message => 'No existe Tipo Documento Registrado' CONSULT => {sql}");
-                throw new Exception("No existe tipo documento");
+                throw new Exception("No obtener la sucursal");
             }
         }
-        public async Task<List<HHRRSucursal>> CrearSucursal(string NombreSucursal,string Dirrecion)
+        public async Task<bool> CrearSucursal(string NombreSucursal, string Dirrecion)
         {
-            this._logger.LogWarning($"SucursalRepository/CrearSucursalId(): Inizialize...");
-            var sql = this._sucursalQuery.GuardarSucursal(NombreSucursal,Dirrecion);
-            var resultado = await this._dbMysqlServerContext.HHRRSucursal.FromSqlRaw(sql).ToListAsync();
-            if (resultado != null)
+            this._logger.LogWarning($"SucursalRepository/CrearSucursal({NombreSucursal},{Dirrecion}): Inizialize...");
+            var sql = this._sucursalQuery.GuardarSucursal(NombreSucursal, Dirrecion);
+            var resultado = await this._dbMysqlServerContext.Database.ExecuteSqlRawAsync(sql);
+            if (resultado == 1)
             {
-                this._logger.LogWarning($"SucursalRepository/CrearSucursalId SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
-                return resultado;
+                this._logger.LogWarning($"SucursalRepository/CrearSucursal SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
+                return true;
             }
             else
             {
-                this._logger.LogError($"SucursalRepository/CrearSucursalId: Message => 'No existe pudo crear Tipo Documento' CONSULT => {sql}");
-                throw new Exception("No existe tipo documento");
+                this._logger.LogError($"SucursalRepository/CrearSucursal: Message => 'No existe pudo crear sucursal' CONSULT => {sql}");
+                throw new Exception("No se pudo crear sucusal");
             }
         }
-        public async Task<List<HHRRSucursal>> ModificarSucursal(string NombreSucursal,string Dirrecion, int id)
+        public async Task<bool> ModificarSucursal(string NombreSucursal, string Dirrecion, int id)
         {
-            this._logger.LogWarning($"SucursalRepository/UpdateSucursal(): Inizialize...");
-            var sql = this._sucursalQuery.ModificarSucursal(NombreSucursal,Dirrecion, id);
-            var resultado = await this._dbMysqlServerContext.HHRRSucursal.FromSqlRaw(sql).ToListAsync();
-            if (resultado != null)
+            this._logger.LogWarning($"SucursalRepository/UpdateSucursal({NombreSucursal},{Dirrecion},{id}): Inizialize...");
+            var sql = this._sucursalQuery.ModificarSucursal(NombreSucursal, Dirrecion, id);
+            var resultado = await this._dbMysqlServerContext.Database.ExecuteSqlRawAsync(sql);
+            if (resultado == 1)
             {
                 this._logger.LogWarning($"SucursalRepository/ModificarSucursal SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
-                return resultado;
+                return true;
             }
             else
             {
-                this._logger.LogError($"SucursalRepository/ModificarSucursal: Message => 'No puso modificar' CONSULT => {sql}");
-                throw new Exception("No existe tipo documento");
+                this._logger.LogError($"SucursalRepository/ModificarSucursal: Message => 'No puso modificar sucursal' CONSULT => {sql}");
+                throw new Exception("No se pudo crear sucursal");
             }
         }
-        public async Task<List<HHRRSucursal>> EliminarSucursal(int id)
+        public async Task<bool> EliminarSucursal(int id)
         {
-            this._logger.LogWarning($"SucursalRepository/EliminarSucursal(): Inizialize...");
+            this._logger.LogWarning($"SucursalRepository/EliminarSucursal({id}): Inizialize...");
             var sql = this._sucursalQuery.EliminarSucursal(id);
-            var resultado = await this._dbMysqlServerContext.HHRRSucursal.FromSqlRaw(sql).ToListAsync();
-            if (resultado != null)
+            var resultado = await this._dbMysqlServerContext.Database.ExecuteSqlRawAsync(sql);
+
+            if (resultado ==1)
             {
                 this._logger.LogWarning($"SucursalRepository/EliminarSucursal SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
-                return resultado;
+                return true;
             }
             else
             {
-                this._logger.LogError($"SucursalRepository/EliminarSucursal: Message => 'No existe Usuario Registrado' CONSULT => {sql}");
-                throw new Exception("No existe tipo documento");
+                this._logger.LogError($"SucursalRepository/EliminarSucursal: Message => 'No se pudo eliminar Sucursal' CONSULT => {sql}");
+                throw new Exception("No se pudo eliminar Sucursal");
             }
         }
     }

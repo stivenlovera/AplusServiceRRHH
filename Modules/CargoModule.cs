@@ -24,19 +24,19 @@ namespace AplusServiceRRHH.Modules
         {
             return await this._cargoRepository.ObtenerCargo();
         }
-        public async Task<List<HHRRCargo>> ObtenerCargoId(int id)
+        public async Task<HHRRCargo> ObtenerCargoId(int id)
         {
             return await this._cargoRepository.ObtenerCargoId(id);
         }
-        public async Task<List<HHRRCargo>> CrearCargo(string NombreCargo)
+        public async Task<bool> CrearCargo(string NombreCargo)
         {
             return await this._cargoRepository.CrearCargoId(NombreCargo);
         }
-        public async Task<List<HHRRCargo>> ModificarCargoId(string NombreCargo, int id)
+        public async Task<bool> ModificarCargoId(string NombreCargo, int id)
         {
             return await this._cargoRepository.ModificarCargo(NombreCargo, id);
         }
-        public async Task<List<HHRRCargo>> EliminarCargoId(int id)
+        public async Task<bool> EliminarCargoId(int id)
         {
             return await this._cargoRepository.EliminarCargo(id);
         }

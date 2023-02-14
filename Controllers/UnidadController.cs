@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AplusServiceRRHH.Dtos;
+using AplusServiceRRHH.Dtos.UnidadDto;
 using AplusServiceRRHH.Modules;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -33,7 +34,7 @@ namespace AplusServiceRRHH.Controllers
             this._logger.LogWarning($"{Request.Method}{Request.Path} Create() Inizialize ...");
             try
             {
-                var unidad= await this._unidadModule.ObtenerUnidad();
+                var unidad = await this._unidadModule.ObtenerUnidad();
                 return new Response
                 {
                     Status = 1,
@@ -53,16 +54,17 @@ namespace AplusServiceRRHH.Controllers
                 return result;
             }
         }
-        [HttpPost]
-        public Response GuardarUnidad()
+        [HttpPost("store")]
+        public async Task<Response> GuardarUnidad(UnidadDto unidadDto)
         {
             this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerUnidad() Inizialize ...");
             try
             {
+                var insert = await this._unidadModule.CrearUnidad(unidadDto.nombreUnidad);
                 return new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
+                    Message = "Registrado correctamente",
                     data = new
                     {
 
@@ -81,20 +83,19 @@ namespace AplusServiceRRHH.Controllers
                 return result;
             }
         }
-        [HttpGet("{id:int}")]
-        public Response ObtenerOneUnidad()
+        [HttpGet("edit/{id:int}")]
+        public async Task<Response> ObtenerOneUnidad(int id)
         {
             this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerUnidad() Inizialize ...");
             try
             {
+                var edit = await this._unidadModule.ObtenerUnidadId(id);
+
                 return new Response
                 {
                     Status = 1,
                     Message = "cargando formulario",
-                    data = new
-                    {
-
-                    }
+                    data = edit
                 };
             }
             catch (System.Exception e)
@@ -109,20 +110,18 @@ namespace AplusServiceRRHH.Controllers
                 return result;
             }
         }
-        [HttpPut("{id:int}")]
-        public Response UpdateUnidad()
+        [HttpPut("update/{id:int}")]
+        public async Task<Response> UpdateUnidad(int id, UnidadDto unidadDto)
         {
             this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerUnidad() Inizialize ...");
             try
             {
+                var update = await this._unidadModule.ModificarUnidadId(unidadDto.nombreUnidad, id);
                 return new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
-                    data = new
-                    {
-
-                    }
+                    Message = "Modificado Correctamente",
+                    data = null
                 };
             }
             catch (System.Exception e)
@@ -137,16 +136,17 @@ namespace AplusServiceRRHH.Controllers
                 return result;
             }
         }
-        [HttpDelete("{id:int}")]
-        public Response DeleteUnidad()
+        [HttpDelete("delete/{id:int}")]
+        public async Task<Response> DeleteUnidad(int id)
         {
-            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerUnidad() Inizialize ...");
+            this._logger.LogWarning($"{Request.Method}{Request.Path} DeleteUnidad() Inizialize ...");
             try
             {
+                var eliminar=await this._unidadModule.EliminarUnidadId(id);
                 return new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
+                    Message = "Eliminado Correctamente",
                     data = new
                     {
 
@@ -161,7 +161,7 @@ namespace AplusServiceRRHH.Controllers
                     Message = e.Message,
                     data = null
                 };
-                this._logger.LogError($"ObtenerUnidad() ERROR=> {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+                this._logger.LogError($"DeleteUnidad() ERROR=> {JsonConvert.SerializeObject(result, Formatting.Indented)}");
                 return result;
             }
         }

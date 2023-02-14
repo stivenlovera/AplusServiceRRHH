@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AplusServiceRRHH.Entities.DBAplusEmpresas;
+using AplusServiceRRHH.Entities.DBAplusEmpresas.Asistencia;
+using AplusServiceRRHH.Entities.DBAplusEmpresas.Contrato;
 using AplusServiceRRHH.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -46,5 +48,9 @@ namespace AplusServiceRRHH.Context
         public virtual DbSet<HHRRColaborador> HHRRColaborador { get; set; }
         //query
         public virtual DbSet<ColaboradorDataTable> ColaboradorDataTable { get; set; }
+        public virtual DbSet<ContratoColaborador> ContratoColaborador { get; set; }
+        public virtual DbSet<HHRRAsistencia> HHRRAsistencia { get; set; }
+        public virtual DbSet<AsistenciaDataTable> AsistenciaDataTable { get; set; }
+        //query contrato
     }
 }

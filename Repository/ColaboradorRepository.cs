@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AplusServiceRRHH.Context;
 using AplusServiceRRHH.Entities.DBAplusEmpresas;
+using AplusServiceRRHH.Entities.DBAplusEmpresas.Contrato;
 using AplusServiceRRHH.Querys;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -104,6 +105,7 @@ namespace AplusServiceRRHH.Repository
             string DirrecionLaboral,
             string EmailLaboral,
             string MotivoContrato,
+            int ModoContrato,
             DateTime FechaFinalizacion,
             DateTime FechaRatificacion,
             string ExcliblePlanilla,
@@ -205,6 +207,7 @@ namespace AplusServiceRRHH.Repository
                 DirrecionLaboral,
                 EmailLaboral,
                 MotivoContrato,
+                ModoContrato,
                 FechaFinalizacion,
                 FechaRatificacion,
                 ExcliblePlanilla,
@@ -307,9 +310,71 @@ namespace AplusServiceRRHH.Repository
             this._logger.LogWarning($"ColaboradorRepository/DatatableColaborador(): Inizialize...");
             var sql = this._colaboradorQuery.DatatableColaborador();
             var resultado = await this._dbMysqlServerContext.ColaboradorDataTable.FromSqlRaw(sql).ToListAsync();
-
             this._logger.LogWarning($"ColaboradorRepository/DatatableColaborador SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
             return resultado;
+        }
+
+        public async Task<ContratoColaborador> EditarContratoColaborador(int id)
+        {
+            this._logger.LogWarning($"ColaboradorRepository/ModicarContratoColaborador({id}): Inizialize...");
+            var sql = this._colaboradorQuery.ObtenerColaboradorContrato(id);
+            var data = await this._dbMysqlServerContext.ContratoColaborador.FromSqlRaw(sql).ToListAsync();
+            var resultado = data.FirstOrDefault();
+            if (resultado != null)
+            {
+                this._logger.LogWarning($"ColaboradorRepository/ObtenerColaboradorId SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
+                return resultado;
+            }
+            else
+            {
+                this._logger.LogError($"ColaboradorRepository/ObtenerColaboradorId: Message => 'No existe Tipo Documento Registrado' CONSULT => {sql}");
+                throw new Exception("No existe tipo documento");
+            }
+        }
+        public async Task<bool> ModicarContratoColaborador(
+                int id,
+                DateTime FechaIngreso,
+                int ModohaberBasico,
+                decimal HaberBasico,
+                int ModoQuincena,
+                int ModoContrato,
+                int TipoContrato,
+                decimal HaberQuincena,
+                string MotivoContrato,
+                DateTime? FechaFinalizacion,
+                DateTime FechaRatificacion,
+                int AguinaldoMes1,
+                int Aplica2aguinaldo
+            )
+        {
+            this._logger.LogWarning($"ColaboradorRepository/ModicarContratoColaborador({id}): Inizialize...");
+            var sql = this._colaboradorQuery.ModificarColaboradorContrato(
+                id,
+                FechaIngreso,
+                ModohaberBasico,
+                HaberBasico,
+                ModoQuincena,
+                ModoContrato,
+                TipoContrato,
+                HaberQuincena,
+                MotivoContrato,
+                FechaFinalizacion,
+                FechaRatificacion,
+                AguinaldoMes1,
+                Aplica2aguinaldo
+            );
+            this._logger.LogWarning($"{sql}");
+            var resultado = await this._dbMysqlServerContext.Database.ExecuteSqlRawAsync(sql);
+            if (resultado == 1)
+            {
+                this._logger.LogWarning($"ColaboradorRepository/ModicarContratoColaborador SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
+                return true;
+            }
+            else
+            {
+                this._logger.LogError($"ColaboradorRepository/ModicarContratoColaborador: Message => 'o se pudo  moificar contrato' CONSULT => {sql}");
+                throw new Exception("No se pudo  moificar contrato");
+            }
         }
     }
 }

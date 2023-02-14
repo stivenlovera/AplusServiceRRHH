@@ -151,7 +151,8 @@ namespace AplusServiceRRHH.Controllers
                 return result;
             }
         }
-        [HttpPost("Store")] // api/Auth/login
+
+        [HttpPost("Store")]
         public async Task<Response> Store([FromBody] StoreColaboradorDto storeColaboradorDto)
         {
             this._logger.LogWarning($"{Request.Method}{Request.Path} Create({JsonConvert.SerializeObject(storeColaboradorDto, Formatting.Indented)}) Inizialize ...");
@@ -204,6 +205,7 @@ namespace AplusServiceRRHH.Controllers
                     storeColaboradorDto.DirrecionLaboral,
                     storeColaboradorDto.EmailLaboral,
                     storeColaboradorDto.MotivoContrato,
+                    storeColaboradorDto.ModalidadContrato,
                     storeColaboradorDto.FechaFinalizacion,
                     storeColaboradorDto.FechaRatificacion,
                     storeColaboradorDto.ExcliblePlanilla,
@@ -257,7 +259,7 @@ namespace AplusServiceRRHH.Controllers
                     storeColaboradorDto.FormacionPrincial,
                     storeColaboradorDto.Sexo
                 );
-                
+
                 return new Response
                 {
                     Status = 1,
@@ -281,7 +283,6 @@ namespace AplusServiceRRHH.Controllers
         public async Task<Response> DataTable()
         {
             this._logger.LogWarning($"{Request.Method}{Request.Path} Create() Inizialize ...");
-
             try
             {
                 var colaboradores = await this._colaboradorModule.ObtenerColaborador();
@@ -297,6 +298,8 @@ namespace AplusServiceRRHH.Controllers
                         cargo = value.NombreCargo,
                         sucursal = value.NombreSucursal,
                         oficina = value.NombreUnidad,
+                        tipoContrato = value.TipoContrato,
+                        ModoContrato = value.ModoContrato,
                     });
                 }
                 return new Response

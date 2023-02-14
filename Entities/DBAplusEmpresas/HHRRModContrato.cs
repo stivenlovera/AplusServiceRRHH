@@ -11,5 +11,6 @@ namespace AplusServiceRRHH.Entities.DBAplusEmpresas
         [Key]
         public int Id { get; set; }
         public string NombreModContrato { get; set; }
+        public int dias { get; set; }
     }
 }

@@ -24,19 +24,19 @@ namespace AplusServiceRRHH.Modules
         {
             return await this._ModoContratoRepository.ObtenerModoContratos();
         }
-        public async Task<List<HHRRModContrato>> ObtenerModContratoId(int id)
+        public async Task<HHRRModContrato> ObtenerModContratoId(int id)
         {
             return await this._ModoContratoRepository.ObtenerModoContratoId(id);
         }
-        public async Task<List<HHRRModContrato>> CrearModContrato(string NombreModContrato)
+        public async Task<bool> CrearModContrato(string NombreModContrato, int dias)
         {
-            return await this._ModoContratoRepository.CrearModoContrato(NombreModContrato);
+            return await this._ModoContratoRepository.CrearModoContrato(NombreModContrato,dias);
         }
-        public async Task<List<HHRRModContrato>> ModificarModContratoId(string NombreModContrato, int id)
+        public async Task<bool> ModificarModContrato(string NombreModContrato, int dias, int id)
         {
-            return await this._ModoContratoRepository.ModificarModoContrato(NombreModContrato, id);
+            return await this._ModoContratoRepository.ModificarModoContrato(NombreModContrato,dias, id);
         }
-        public async Task<List<HHRRModContrato>> EliminarModContratoId(int id)
+        public async Task<bool> EliminarModContrato(int id)
         {
             return await this._ModoContratoRepository.EliminarModoContrato(id);
         }

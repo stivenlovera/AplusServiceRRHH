@@ -5,8 +5,11 @@ using AplusServiceRRHH.Modules;
 using AplusServiceRRHH.Querys;
 using AplusServiceRRHH.Repository;
 using AplusServiceRRHH.Utils;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -78,6 +81,14 @@ builder.Services.AddDbContext<DbContextComisiones>(options =>
 {
     options.UseSqlServer(sqlServerConnectDBComisiones);
 });
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+/*
+    *utilidades
+*/
+builder.Services.AddTransient<RazorRendererHelper>();
+builder.Services.AddTransient<GenerateDocumento>();
+builder.Services.AddTransient<GeneratePlantilla>();
 
 /*
     *Module
@@ -104,6 +115,9 @@ builder.Services.AddTransient<BancoModule>();
 builder.Services.AddTransient<CargoModule>();
 builder.Services.AddTransient<AdministracionPensionesModule>();
 builder.Services.AddTransient<ColaboradorModule>();
+builder.Services.AddTransient<ContratoModule>();
+builder.Services.AddTransient<AsistenciaModule>();
+
 /*
     *Repository
 */
@@ -129,6 +143,8 @@ builder.Services.AddTransient<BancoRepository>();
 builder.Services.AddTransient<CargoRepository>();
 builder.Services.AddTransient<AdministracionPesionRepository>();
 builder.Services.AddTransient<ColaboradorRepository>();
+builder.Services.AddTransient<EmpresaRepository>();
+builder.Services.AddTransient<AsistenciaRepository>();
 /*
     *Querys
 */
@@ -155,7 +171,10 @@ builder.Services.AddTransient<BancosQuery>();
 builder.Services.AddTransient<CargoQuery>();
 builder.Services.AddTransient<AdministracionPesionQuery>();
 builder.Services.AddTransient<ColaboradorQuery>();
+builder.Services.AddTransient<EmpresaQuery>();
+builder.Services.AddTransient<AsistenciaQuery>();
 
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 /*
     *others
 */
@@ -190,6 +209,7 @@ app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
 
 try
 {

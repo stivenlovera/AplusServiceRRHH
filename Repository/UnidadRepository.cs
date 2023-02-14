@@ -42,11 +42,12 @@ namespace AplusServiceRRHH.Repository
                 throw new Exception("No existe tipo documento");
             }
         }
-        public async Task<List<HHRRUnidad>> ObtenerUnidadId(int id)
+        public async Task<HHRRUnidad> ObtenerUnidadId(int id)
         {
             this._logger.LogWarning($"UnidadRepository/ObtenerUnidadId(): Inizialize...");
             var sql = this._UnidadQuery.ObtenerUnidadId(id);
-            var resultado = await this._dbMysqlServerContext.HHRRUnidad.FromSqlRaw(sql).ToListAsync();
+            var data = await this._dbMysqlServerContext.HHRRUnidad.FromSqlRaw(sql).ToListAsync();
+            var resultado = data.FirstOrDefault();
             if (resultado != null)
             {
                 this._logger.LogWarning($"UnidadRepository/ObtenerUnidadId SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
@@ -58,51 +59,51 @@ namespace AplusServiceRRHH.Repository
                 throw new Exception("No existe tipo documento");
             }
         }
-        public async Task<List<HHRRUnidad>> CrearUnidadId(string NombreUnidad)
+        public async Task<bool> CrearUnidadId(string NombreUnidad)
         {
             this._logger.LogWarning($"UnidadRepository/CrearUnidadId(): Inizialize...");
             var sql = this._UnidadQuery.GuardarUnidad(NombreUnidad);
-            var resultado = await this._dbMysqlServerContext.HHRRUnidad.FromSqlRaw(sql).ToListAsync();
-            if (resultado != null)
+            var resultado = await this._dbMysqlServerContext.Database.ExecuteSqlRawAsync(sql);
+            if (resultado == 1)
             {
                 this._logger.LogWarning($"UnidadRepository/CrearUnidadId SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
-                return resultado;
+                return true;
             }
             else
             {
-                this._logger.LogError($"UnidadRepository/CrearUnidadId: Message => 'No existe pudo crear Tipo Documento' CONSULT => {sql}");
+                this._logger.LogError($"UnidadRepository/CrearUnidadId: Message => 'No existe pudo crear Unidad' CONSULT => {sql}");
                 throw new Exception("No existe tipo documento");
             }
         }
-        public async Task<List<HHRRUnidad>> ModificarUnidad(string NombreUnidad, int id)
+        public async Task<bool> ModificarUnidad(string NombreUnidad, int id)
         {
             this._logger.LogWarning($"UnidadRepository/UpdateUnidad(): Inizialize...");
             var sql = this._UnidadQuery.ModificarUnidad(NombreUnidad, id);
-            var resultado = await this._dbMysqlServerContext.HHRRUnidad.FromSqlRaw(sql).ToListAsync();
-            if (resultado != null)
+            var resultado = await this._dbMysqlServerContext.Database.ExecuteSqlRawAsync(sql);
+            if (resultado == 1)
             {
                 this._logger.LogWarning($"UnidadRepository/ModificarUnidad SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
-                return resultado;
+                return true;
             }
             else
             {
-                this._logger.LogError($"UnidadRepository/ModificarUnidad: Message => 'No puso modificar' CONSULT => {sql}");
+                this._logger.LogError($"UnidadRepository/ModificarUnidad: Message => 'No puso Añadir' CONSULT => {sql}");
                 throw new Exception("No existe tipo documento");
             }
         }
-        public async Task<List<HHRRUnidad>> EliminarUnidad(int id)
+        public async Task<bool> EliminarUnidad(int id)
         {
             this._logger.LogWarning($"UnidadRepository/EliminarUnidad(): Inizialize...");
             var sql = this._UnidadQuery.EliminarUnidad(id);
-            var resultado = await this._dbMysqlServerContext.HHRRUnidad.FromSqlRaw(sql).ToListAsync();
-            if (resultado != null)
+            var resultado = await this._dbMysqlServerContext.Database.ExecuteSqlRawAsync(sql);
+            if (resultado == 1)
             {
                 this._logger.LogWarning($"UnidadRepository/EliminarUnidad SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
-                return resultado;
+                return true;
             }
             else
             {
-                this._logger.LogError($"UnidadRepository/EliminarUnidad: Message => 'No existe Usuario Registrado' CONSULT => {sql}");
+                this._logger.LogError($"UnidadRepository/EliminarUnidad: Message => 'Error al eliminar Unidad' CONSULT => {sql}");
                 throw new Exception("No existe tipo documento");
             }
         }

@@ -16,7 +16,7 @@ namespace AplusServiceRRHH.Querys
         public string ObtenerTipoContratoId(int id)
         {
             return @$"
-               SELECT id,`NombreTipoContrato` FROM hhrrtipocontrato WHERE id='{id}';
+               SELECT id, NombreTipoContrato as nombreModalidad FROM hhrrtipocontrato WHERE id='{id}';
             ";
         }
         public string GuardarTipoContrato(string NombreTipoContrato)

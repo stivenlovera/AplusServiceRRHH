@@ -22,5 +22,7 @@ namespace AplusServiceRRHH.Entities.DBAplusEmpresas
         public string NombreUnidad { get; set; }
         public string NombreSucursal { get; set; }
         public string NombreOficina { get; set; }
+        public string ModoContrato { get; set; }
+        public string TipoContrato { get; set; }
     }
 }

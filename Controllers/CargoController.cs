@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AplusServiceRRHH.Dtos;
+using AplusServiceRRHH.Dtos.CargoDto;
 using AplusServiceRRHH.Modules;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -30,7 +31,7 @@ namespace AplusServiceRRHH.Controllers
             this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerCargo() Inizialize ...");
             try
             {
-                var Cargo= await this._cargoModule.ObtenerCargo();
+                var Cargo = await this._cargoModule.ObtenerCargo();
                 return new Response
                 {
                     Status = 1,
@@ -50,16 +51,17 @@ namespace AplusServiceRRHH.Controllers
                 return result;
             }
         }
-        [HttpPost]
-        public Response GuardarCargo()
+        [HttpPost("store")]
+        public async Task<Response> GuardarCargo([FromBody] CargoDto cargoDto)
         {
-            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerCargo() Inizialize ...");
+            this._logger.LogWarning($"{Request.Method}{Request.Path} GuardarCargo({JsonConvert.SerializeObject(cargoDto, Formatting.Indented)}) Inizialize ...");
             try
             {
+                var insert = await this._cargoModule.CrearCargo(cargoDto.nombreCargo);
                 return new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
+                    Message = "Registrado Correctamente",
                     data = new
                     {
 
@@ -78,20 +80,18 @@ namespace AplusServiceRRHH.Controllers
                 return result;
             }
         }
-        [HttpGet("{id:int}")]
-        public Response ObtenerOneCargo()
+        [HttpGet("edit/{id:int}")]
+        public async Task<Response> ObtenerOneCargo(int id)
         {
-            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerCargo() Inizialize ...");
+            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerOneCargo() Inizialize ...");
             try
             {
+                var editar= await this._cargoModule.ObtenerCargoId(id);
                 return new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
-                    data = new
-                    {
-
-                    }
+                    Message = "Mostrando un cargo",
+                    data = editar
                 };
             }
             catch (System.Exception e)
@@ -102,20 +102,21 @@ namespace AplusServiceRRHH.Controllers
                     Message = e.Message,
                     data = null
                 };
-                this._logger.LogError($"ObtenerCargo() ERROR=> {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+                this._logger.LogError($"ObtenerOneCargo() ERROR=> {JsonConvert.SerializeObject(result, Formatting.Indented)}");
                 return result;
             }
         }
-        [HttpPut("{id:int}")]
-        public Response UpdateCargo()
+        [HttpPut("update/{id:int}")]
+        public async Task<Response> UpdateCargo(int id, CargoDto cargoDto)
         {
-            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerCargo() Inizialize ...");
+            this._logger.LogWarning($"{Request.Method}{Request.Path} UpdateCargo() Inizialize ...");
             try
             {
+                var update = await this._cargoModule.ModificarCargoId(cargoDto.nombreCargo, id);
                 return new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
+                    Message = "Modificado corretamente",
                     data = new
                     {
 
@@ -130,24 +131,22 @@ namespace AplusServiceRRHH.Controllers
                     Message = e.Message,
                     data = null
                 };
-                this._logger.LogError($"ObtenerCargo() ERROR=> {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+                this._logger.LogError($"UpdateCargo() ERROR=> {JsonConvert.SerializeObject(result, Formatting.Indented)}");
                 return result;
             }
         }
-        [HttpDelete("{id:int}")]
-        public Response DeleteCargo()
+        [HttpDelete("delete/{id:int}")]
+        public async Task<Response> DeleteCargo(int id)
         {
-            this._logger.LogWarning($"{Request.Method}{Request.Path} ObtenerCargo() Inizialize ...");
+            this._logger.LogWarning($"{Request.Method}{Request.Path} DeleteCargo() Inizialize ...");
             try
             {
+                var delete = await this._cargoModule.EliminarCargoId(id);
                 return new Response
                 {
                     Status = 1,
-                    Message = "cargando formulario",
-                    data = new
-                    {
-
-                    }
+                    Message = "cargo eliminado correctamente",
+                    data = null
                 };
             }
             catch (System.Exception e)
@@ -158,7 +157,7 @@ namespace AplusServiceRRHH.Controllers
                     Message = e.Message,
                     data = null
                 };
-                this._logger.LogError($"ObtenerCargo() ERROR=> {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+                this._logger.LogError($"DeleteCargo() ERROR=> {JsonConvert.SerializeObject(result, Formatting.Indented)}");
                 return result;
             }
         }

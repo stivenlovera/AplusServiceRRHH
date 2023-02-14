@@ -44,6 +44,7 @@ CREATE TABLE
         ModohaberBasico INT NULL,
         HaberBasico INT NULL,
         ModoQuincena INT NULL,
+        ModoContrato INT NULL,
         HaberQuincena INT NULL,
         TelefonoLaboral INT NULL,
         CelularLaboral TEXT NULL,
@@ -316,10 +317,21 @@ SELECT
     c.ApellidoCasado,
     cargo.NombreCargo,
     unidad.NombreUnidad,
+    c.HaberBasico,
+    c.HaberQuincena,
+    c.ModohaberBasico,
+    c.ModoQuincena,
+    c.Clasificacionlaboral,
+    c.MotivoContrato,
+    c.FechaIngreso,
+    c.FechaRatificacion,
+    c.FechaFinalizacion,
+    c.Aplica2aguinaldo,
+    c.AguinaldoMes1,
     sucursal.NombreSucursal,
-    oficina.NombreOficina
+    c.ModoContrato,
+    c.TipoContrato
 FROM hhrrcolaborador as c
     inner JOIN hhrrcargo as cargo on cargo.id = c.Cargo
     INNER JOIN hhrrunidad as unidad on unidad.id = c.Unidad
     INNER JOIN hhrrsucursal as sucursal on sucursal.id = c.Sucursal
-    INNER JOIN hhrroficina as oficina on c.Oficina = oficina.id
