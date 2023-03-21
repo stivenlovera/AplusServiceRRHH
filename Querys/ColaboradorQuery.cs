@@ -16,7 +16,7 @@ namespace AplusServiceRRHH.Querys
         public string ObtenerColaboradorId(int id)
         {
             return @$"
-               SELECT id,NombreColaborador FROM hhrrColaborador WHERE id='{id}';
+               SELECT * FROM hhrrColaborador WHERE id='{id}';
             ";
         }
         public string GuardarColaborador(
@@ -117,7 +117,7 @@ namespace AplusServiceRRHH.Querys
                         int AdministracionPensiones,
                         int CajaSalud,
                         int FormacionPrincial,
-                        int Sexo
+                        int HHRRSexoId
         )
         {
             return @$"
@@ -146,10 +146,10 @@ namespace AplusServiceRRHH.Querys
                         FactorSangre,
                         Dirrecion,
                         Email,
-                        TipoDocumento,
-                        Nacionalidad,
-                        Departamento,
-                        EstadoCivil,
+                        HHRRTipoDocumentoId,
+                        HHRRNacionalidadId,
+                        HHRRDepartamentoId,
+                        HHRREstadoCivilId,
                         ConyugeNombreCompleto,
                         ConyugeLugarNacimiento,
                         ConyugeFechaNacimiento,
@@ -158,7 +158,7 @@ namespace AplusServiceRRHH.Querys
                         FechaIngresoVacaciones,
                         FechaIngresoVacacionesAnt,
                         FechaIngresoBonoAntiguedad,
-                        Oficina,
+                        HHRROficinaId,
                         ModohaberBasico,
                         HaberBasico,
                         ModoQuincena,
@@ -168,7 +168,7 @@ namespace AplusServiceRRHH.Querys
                         DirrecionLaboral,
                         EmailLaboral,
                         MotivoContrato,
-                        ModoContrato,
+                        HHRRModContratoId,
                         FechaFinalizacion,
                         FechaRatificacion,
                         ExcliblePlanilla,
@@ -207,20 +207,20 @@ namespace AplusServiceRRHH.Querys
                         Dominicales,
                         TrabajaDomingo,
                         HorasPlanillas,
-                        Unidad,
-                        Sucursal,
-                        Cargo,
-                        Clasificacionlaboral,
-                        TipoContrato,
-                        InformacionContable,
-                        CentroCosto,
-                        FormaPago,
-                        TipoCuenta,
-                        Banco,
-                        AdministracionPensiones,
-                        CajaSalud,
-                        FormacionPrincial,
-                        Sexo
+                        HHRRUnidadId,
+                        HHRRSucursalId,
+                        HHRRCargoId,
+                        HHRRClasificacionLaboralId,
+                        HHRRtipocontratoId,
+                        HHRRInformacionContableId,
+                        HHRRCentroCostoId,
+                        HHRRFormaPagoId,
+                        HHRRTipoCuentaId,
+                        HHRRBancoId,
+                        HHRRadministracionpesionId,
+                        HHRRcajasaludId,
+                        HHRRFormacionPrincipalId,
+                        HHRRSexoId
                     )
                 VALUES (
                          '{Ci}',
@@ -320,7 +320,7 @@ namespace AplusServiceRRHH.Querys
                          '{AdministracionPensiones}',
                          '{CajaSalud}',
                          '{FormacionPrincial}',
-                         '{Sexo}'
+                         '{HHRRSexoId}'
                     );
             ";
         }
@@ -364,11 +364,11 @@ namespace AplusServiceRRHH.Querys
                 contrato.NombreModContrato as ModoContrato,
                 tipoContrato.NombreTipoContrato as TipoContrato
             FROM hhrrcolaborador as c
-                inner JOIN hhrrcargo as cargo on cargo.id = c.Cargo
-                INNER JOIN hhrrunidad as unidad on unidad.id = c.Unidad
-                INNER JOIN hhrrsucursal as sucursal on sucursal.id = c.Sucursal
-                INNER JOIN hhrrmodcontrato as contrato on contrato.id = c.ModoContrato
-                INNER JOIN hhrrtipocontrato as tipoContrato on tipoContrato.id=c.TipoContrato
+                inner JOIN hhrrcargo as cargo on cargo.id = c.HHRRCargoId
+                INNER JOIN hhrrunidad as unidad on unidad.id = c.HHRRUnidadId
+                INNER JOIN hhrrsucursal as sucursal on sucursal.id = c.HHRRSucursalId
+                INNER JOIN hhrrmodcontrato as contrato on contrato.id = c.HHRRModContratoId
+                INNER JOIN hhrrtipocontrato as tipoContrato on tipoContrato.id=c.HHRRtipocontratoId
             ";
         }
         public string ObtenerColaboradorContrato(int id)
@@ -398,12 +398,12 @@ namespace AplusServiceRRHH.Querys
                 c.Aplica2aguinaldo,
                 c.AguinaldoMes1,
                 sucursal.NombreSucursal,
-                c.ModoContrato,
-                c.TipoContrato
+                c.HHRRModContratoId,
+                c.HHRRtipocontratoId
             FROM hhrrcolaborador as c
-                inner JOIN hhrrcargo as cargo on cargo.id = c.Cargo
-                INNER JOIN hhrrunidad as unidad on unidad.id = c.Unidad
-                INNER JOIN hhrrsucursal as sucursal on sucursal.id = c.Sucursal
+                inner JOIN hhrrcargo as cargo on cargo.id = c.HHRRCargoId
+                INNER JOIN hhrrunidad as unidad on unidad.id = c.HHRRUnidadId
+                INNER JOIN hhrrsucursal as sucursal on sucursal.id = c.HHRRSucursalId
             WHERE
                 c.id='{id}'
             ";
@@ -433,8 +433,8 @@ namespace AplusServiceRRHH.Querys
                     ModohaberBasico = '{ModohaberBasico}',
                     HaberBasico = '{HaberBasico}',
                     ModoQuincena = '{ModoQuincena}',
-                    ModoContrato = '{ModoContrato}',
-                    TipoContrato = '{TipoContrato}',
+                    HHRRModContratoId = '{ModoContrato}',
+                    HHRRtipocontratoId = '{TipoContrato}',
                     HaberQuincena = '{HaberQuincena}',
                     MotivoContrato = '{MotivoContrato}',
                     FechaFinalizacion = {validarNull},

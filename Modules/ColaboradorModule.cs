@@ -24,7 +24,7 @@ namespace AplusServiceRRHH.Modules
         {
             return await this._colaboradorRepository.DatatableColaborador();
         }
-        public async Task<List<HHRRColaborador>> ObtenerColaboradorId(int id)
+        public async Task<HHRRColaborador> ObtenerColaboradorId(int id)
         {
             return await this._colaboradorRepository.ObtenerColaboradorId(id);
         }

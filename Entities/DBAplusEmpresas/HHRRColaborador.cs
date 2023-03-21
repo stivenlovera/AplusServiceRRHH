@@ -48,10 +48,10 @@ namespace AplusServiceRRHH.Entities.DBAplusEmpresas
         public int HaberQuincena { get; set; }
         public int TelefonoLaboral { get; set; }
         public string CelularLaboral { get; set; }
-        public int DirrecionLaboral { get; set; }
+        public string DirrecionLaboral { get; set; }
         public string EmailLaboral { get; set; }
         public string MotivoContrato { get; set; }
-        public DateTime FechaFinalizacion { get; set; }
+        public DateTime? FechaFinalizacion { get; set; }
         public DateTime FechaRatificacion { get; set; }
         public int ExcliblePlanilla { get; set; }
         public int AguinaldoMes1 { get; set; }
@@ -68,7 +68,7 @@ namespace AplusServiceRRHH.Entities.DBAplusEmpresas
         public int AportaAFP { get; set; }
         public int AplicaCajaSalud { get; set; }
         public string NroAsegurado { get; set; }
-        public int Discapacidad { get; set; }
+        public string Discapacidad { get; set; }
         public int RequiereApruebeVacaciones { get; set; }
         public decimal ValorLunes { get; set; }
         public decimal ValorMartes { get; set; }
@@ -102,6 +102,6 @@ namespace AplusServiceRRHH.Entities.DBAplusEmpresas
         public int AdministracionPensiones { get; set; }
         public int CajaSalud { get; set; }
         public int FormacionPrincial { get; set; }
-        public int Sexo { get; set; }
+        public int HHRRSexoId{ get; set; }
     }
 }

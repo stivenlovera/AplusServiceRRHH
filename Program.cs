@@ -1,10 +1,13 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using AplusServiceRRHH.Context;
+using AplusServiceRRHH.CronJobs;
+using AplusServiceRRHH.Middelware;
 using AplusServiceRRHH.Modules;
 using AplusServiceRRHH.Querys;
 using AplusServiceRRHH.Repository;
 using AplusServiceRRHH.Utils;
+using comisionesapi.Utils;
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -89,7 +92,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddTransient<RazorRendererHelper>();
 builder.Services.AddTransient<GenerateDocumento>();
 builder.Services.AddTransient<GeneratePlantilla>();
-
+builder.Services.AddTransient<ResolverUser>();
 /*
     *Module
 */
@@ -145,6 +148,8 @@ builder.Services.AddTransient<AdministracionPesionRepository>();
 builder.Services.AddTransient<ColaboradorRepository>();
 builder.Services.AddTransient<EmpresaRepository>();
 builder.Services.AddTransient<AsistenciaRepository>();
+builder.Services.AddTransient<UsuarioRepository>();
+
 /*
     *Querys
 */
@@ -173,6 +178,12 @@ builder.Services.AddTransient<AdministracionPesionQuery>();
 builder.Services.AddTransient<ColaboradorQuery>();
 builder.Services.AddTransient<EmpresaQuery>();
 builder.Services.AddTransient<AsistenciaQuery>();
+builder.Services.AddTransient<RolQuery>();
+builder.Services.AddTransient<UsuarioQuery>();
+builder.Services.AddTransient<UsuarioRolQuery>();
+
+/*service Worker*/
+builder.Services.AddHostedService<ServiceJob>();
 
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 /*
@@ -203,7 +214,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseCors(
-    options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+    options =>
+    {
+        options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Authorization");
+    }
 );
 app.UseStaticFiles();
 app.UseHttpsRedirection();
@@ -214,6 +228,7 @@ app.MapControllers();
 try
 {
     Log.Warning("Iniciando Web API");
+    app.UseRefreshToken();
     app.Run();
 }
 catch (Exception ex)

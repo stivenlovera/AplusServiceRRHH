@@ -43,11 +43,12 @@ namespace AplusServiceRRHH.Repository
                 throw new Exception("No existe tipo documento");
             }
         }
-        public async Task<List<HHRRColaborador>> ObtenerColaboradorId(int id)
+        public async Task<HHRRColaborador> ObtenerColaboradorId(int id)
         {
-            this._logger.LogWarning($"ColaboradorRepository/ObtenerColaboradorId(): Inizialize...");
+            this._logger.LogWarning($"ColaboradorRepository/ObtenerColaboradorId({id}): Inizialize...");
             var sql = this._colaboradorQuery.ObtenerColaboradorId(id);
-            var resultado = await this._dbMysqlServerContext.HHRRColaborador.FromSqlRaw(sql).ToListAsync();
+            var data = await this._dbMysqlServerContext.HHRRColaborador.FromSqlRaw(sql).ToListAsync();
+            var resultado = data.FirstOrDefault();
             if (resultado != null)
             {
                 this._logger.LogWarning($"ColaboradorRepository/ObtenerColaboradorId SUCCESS => {JsonConvert.SerializeObject(resultado, Formatting.Indented)}");
@@ -157,7 +158,7 @@ namespace AplusServiceRRHH.Repository
             int AdministracionPensiones,
             int CajaSalud,
             int FormacionPrincial,
-            int Sexo
+            int HHRRSexoId
         )
         {
             this._logger.LogWarning($"ColaboradorRepository/CrearColaboradorId(): Inizialize...");
@@ -259,7 +260,7 @@ namespace AplusServiceRRHH.Repository
                 AdministracionPensiones,
                 CajaSalud,
                 FormacionPrincial,
-                Sexo
+                HHRRSexoId
             );
             var resultado = await this._dbMysqlServerContext.Database.ExecuteSqlRawAsync(sql);
             if (resultado == 1)

@@ -30,10 +30,10 @@ namespace AplusServiceRRHH.Dtos.ColaboradorDto
         public string FactorSangre { get; set; }
         public string Dirrecion { get; set; }
         public string Email { get; set; }
-        public int TipoDocumento { get; set; }
-        public int Nacionalidad { get; set; }
-        public int Departamento { get; set; }
-        public int EstadoCivil { get; set; }
+        public int TipoDocumentoId { get; set; }
+        public int NacionalidadId { get; set; }
+        public int DepartamentoId { get; set; }
+        public int EstadoCivilId { get; set; }
         public string ConyugeNombreCompleto { get; set; }
         public string ConyugeLugarNacimiento { get; set; }
         public DateTime ConyugeFechaNacimiento { get; set; }
@@ -91,19 +91,19 @@ namespace AplusServiceRRHH.Dtos.ColaboradorDto
         public string Dominicales { get; set; }
         public string TrabajaDomingo { get; set; }
         public string HorasPlanillas { get; set; }
-        public int Unidad { get; set; }
-        public int Sucursal { get; set; }
-        public int Cargo { get; set; }
-        public int Clasificacionlaboral { get; set; }
-        public int TipoContrato { get; set; }
-        public int InformacionContable { get; set; }
-        public int CentroCosto { get; set; }
-        public int FormaPago { get; set; }
-        public int TipoCuenta { get; set; }
-        public int Banco { get; set; }
-        public int AdministracionPensiones { get; set; }
-        public int CajaSalud { get; set; }
-        public int FormacionPrincial { get; set; }
-        public int Sexo { get; set; }
+        public int UnidadId { get; set; }
+        public int SucursalId { get; set; }
+        public int CargoId { get; set; }
+        public int ClasificacionlaboralId { get; set; }
+        public int TipoContratoId { get; set; }
+        public int InformacionContableId { get; set; }
+        public int CentroCostoId { get; set; }
+        public int FormaPagoId { get; set; }
+        public int TipoCuentaId { get; set; }
+        public int BancoId { get; set; }
+        public int AdministracionPensionesId { get; set; }
+        public int CajaSaludId { get; set; }
+        public int FormacionPrincialId { get; set; }
+        public int SexoId { get; set; }
     }
 }

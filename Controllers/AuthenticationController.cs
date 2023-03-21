@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AplusServiceRRHH.Dtos;
 using AplusServiceRRHH.Dtos.Auth;
 using AplusServiceRRHH.Modules;
+using comisionesapi.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +19,7 @@ namespace AplusServiceRRHH.Controllers
 {
     [ApiController]
     [Route("api/auth")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AuthenticationController : ControllerBase
     {
         private readonly ILogger<AuthenticationController> _logger;
@@ -25,13 +27,17 @@ namespace AplusServiceRRHH.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly ResolverUser _resolverUser;
+        private readonly ColaboradorModule _colaboradorModule;
 
         public AuthenticationController(
             ILogger<AuthenticationController> logger,
             AuthenticationModule authenticacionModule,
             UserManager<IdentityUser> userManager,
             IConfiguration configuration,
-            SignInManager<IdentityUser> signInManager
+            SignInManager<IdentityUser> signInManager,
+            ResolverUser resolverUser,
+            ColaboradorModule colaboradorModule
         )
         {
             this._logger = logger;
@@ -39,8 +45,11 @@ namespace AplusServiceRRHH.Controllers
             this._userManager = userManager;
             this._configuration = configuration;
             this._signInManager = signInManager;
+            this._resolverUser = resolverUser;
+            this._colaboradorModule = colaboradorModule;
         }
         [HttpPost("login")] // api/Auth/login
+        [AllowAnonymous]
         public async Task<Response> Login(LoginDto loginDto)
         {
             this._logger.LogWarning($"{Request.Method}{Request.Path} Login({loginDto.Usuario},{loginDto.Password}) Inizialize ...");
@@ -49,7 +58,7 @@ namespace AplusServiceRRHH.Controllers
                 //logica
                 var user = await this._authenticacionModule.Login(loginDto.Usuario, loginDto.Password);
                 //delete registro e logeo
-                var generateToken = this.CreateAuthorize(loginDto, user.Nombre, user.NombreCompleto);
+                var generateToken = this.CreateAuthorize(user.usuario, user.id, user.HHRRcolaboradorId, $"{user.Nombre1} {user.Nombre2} {user.Nombre3} {user.ApellidoPaterno} {user.ApellidoMaterno} {user.ApellidoCasado}");
                 this._logger.LogWarning($"Login() SUCCESS => {JsonConvert.SerializeObject(generateToken, Formatting.Indented)}");
                 var result = new Response
                 {
@@ -73,22 +82,21 @@ namespace AplusServiceRRHH.Controllers
         }
         [HttpGet] // api/Auth/login
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<Response> Authenticacion()
+        public /* async Task< */Response/* > */ Authenticacion()
         {
             this._logger.LogWarning($"{Request.Method}{Request.Path} Authenticacion() Inizialize ...");
             try
             {
                 //logica
-                var user = await this._authenticacionModule.Login("admin", "admin");
-                //delete registro e logeo
-                //this._logger.LogWarning($"Authenticacion() SUCCESS => {JsonConvert.SerializeObject(generateToken, Formatting.Indented)}");
+                var user=this._resolverUser.GetUser(HttpContext);
+                //var verificar = await this._colaboradorModule.ObtenerColaboradorId(user.colaboradorId);
                 var result = new Response
                 {
                     Status = 1,
-                    Message = "Autherizacion",
+                    Message = "Autorizado",
                     data = new
                     {
-                        nombreCompleto = "Stiven",
+                        nombreCompleto = "",//$"{verificar.Nombre1} {verificar.Nombre2} {verificar.Nombre3} {verificar.ApellidoPaterno} {verificar.ApellidoMaterno} {verificar.ApellidoCasado}",
                         empresa = "Aplus Security"
                     }
                 };
@@ -124,7 +132,7 @@ namespace AplusServiceRRHH.Controllers
                 {
                     Status = 0,
                     Message = "Error",
-                    data = this.ConstrucToken(loginDto)
+                    data = this.ConstrucToken(1, 1)
                 };
                 return success;
             }
@@ -140,24 +148,26 @@ namespace AplusServiceRRHH.Controllers
             }
         }
         //Function Constructor Token 
-        private TokenDto CreateAuthorize(LoginDto loginDto, string empresa, string nombrecompleto)
+        private TokenDto CreateAuthorize(string usuario, int id, int colaboradorId, string nombrecompleto)
         {
             var user = new IdentityUser
             {
-                Id = loginDto.Usuario,
-                UserName = loginDto.Usuario
+                Id = id.ToString(),
+                UserName = usuario
             };
 
-            var generateToken = this.ConstrucToken(loginDto);
+            var generateToken = this.ConstrucToken(id, colaboradorId);
             this._logger.LogWarning($"CreateAuthorize() SUCCESS => Token generado correctamente");
             return generateToken;
         }
         //Function Construct token
-        private TokenDto ConstrucToken(LoginDto loginDto)
+        private TokenDto ConstrucToken(int id, int colaboradorId)
         {
             var claims = new List<Claim>(){
-                new Claim("ci", loginDto.Usuario),
-                new Claim("rol","cliente")
+                new Claim("id", id.ToString()),
+                new Claim("colaboradorId",colaboradorId.ToString()),
+                new Claim(ClaimTypes.Role,"administrador"),//roles
+                new Claim(ClaimTypes.Role,"invitado")//roles
             };
             this._logger.LogWarning($"Create Claims() SUCCESS => {JsonConvert.SerializeObject(claims, Formatting.Indented)}");
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._configuration.GetSection("KeyTokken").Value));
@@ -192,7 +202,7 @@ namespace AplusServiceRRHH.Controllers
                 Usuario = ci,
                 Password = "Demo1?"
             };
-            return this.ConstrucToken(login);
+            return this.ConstrucToken(1, 1);
         }
 
         [HttpGet("logout")]
@@ -209,7 +219,7 @@ namespace AplusServiceRRHH.Controllers
                 Usuario = ci,
                 Password = "sdfSFSDA123?¡"
             };
-            return this.ConstrucToken(login);
+            return this.ConstrucToken(1, 1);
         }
         private async Task<bool> ResetUser(LoginDto loginDto)
         {
