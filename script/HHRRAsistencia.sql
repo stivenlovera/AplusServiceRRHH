@@ -1,4 +1,4 @@
--- Active: 1673442535968@@127.0.0.1@3306@aplus_empresas
+-- Active: 1679545701306@@159.203.172.137@3306@aplus_empresas
 
 DROP TABLE IF EXISTS HHRRAsistencia;
 
@@ -98,3 +98,7 @@ where
     AND id = 1;
 
 delete from hhrrasistencia where id = '{id}';
+
+
+
+SELECT * FROM HHRRHorario as h INNER JOIN HHRRDia as d on h.id=d.HHRRHorarioId

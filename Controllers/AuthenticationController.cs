@@ -88,7 +88,7 @@ namespace AplusServiceRRHH.Controllers
             try
             {
                 //logica
-                var user=this._resolverUser.GetUser(HttpContext);
+                var user = this._resolverUser.GetUser(HttpContext);
                 //var verificar = await this._colaboradorModule.ObtenerColaboradorId(user.colaboradorId);
                 var result = new Response
                 {
@@ -113,7 +113,6 @@ namespace AplusServiceRRHH.Controllers
                 this._logger.LogError($"Login() ERROR=> {JsonConvert.SerializeObject(result, Formatting.Indented)}");
                 return result;
             }
-
         }
         [HttpPost("registrar")] // api/Auth/login
         public async Task<Response> Register(LoginDto loginDto)
@@ -205,21 +204,32 @@ namespace AplusServiceRRHH.Controllers
             return this.ConstrucToken(1, 1);
         }
 
-        [HttpGet("logout")]
+        [HttpPost("logout")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        private TokenDto Logout()
+        public Response Logout()
         {
-            var aux = HttpContext.User.Claims;
-            var claimsCi = HttpContext.User.Claims.Where(user => user.Type == "Ci").FirstOrDefault();
-            var claimsRol = HttpContext.User.Claims.Where(user => user.Type == "rol").FirstOrDefault();
-            var ci = claimsCi.Value;
-            var rol = claimsRol.Value;
-            var login = new LoginDto()
+            this._logger.LogWarning($"{Request.Method}{Request.Path} Logout() Inizialize ...");
+            try
             {
-                Usuario = ci,
-                Password = "sdfSFSDA123?¡"
-            };
-            return this.ConstrucToken(1, 1);
+                var result = new Response
+                {
+                    Status = 1,
+                    Message = "Hasta luego",
+                    data = null
+                };
+                return result;
+            }
+            catch (System.Exception e)
+            {
+                var result = new Response
+                {
+                    Status = 0,
+                    Message = e.Message,
+                    data = null
+                };
+                this._logger.LogError($"Logout() ERROR=> {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+                return result;
+            }
         }
         private async Task<bool> ResetUser(LoginDto loginDto)
         {
