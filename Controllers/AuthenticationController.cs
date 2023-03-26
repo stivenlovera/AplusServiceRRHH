@@ -244,5 +244,9 @@ namespace AplusServiceRRHH.Controllers
             }
             return true;
         }
+        public string Informacion()
+        {
+           return "";
+        }
     }
 }
